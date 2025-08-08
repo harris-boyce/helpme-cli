@@ -19,6 +19,12 @@ export function App({ initialRequest = '', copyToClipboard = true, debug = false
   const [providerInstance, setProviderInstance] = useState(null);
   const pasteShortcut = useMemo(() => getPasteShortcut(), []);
   const config = useMemo(() => getConfig({ providerOverride }), [providerOverride]);
+  const modelName = useMemo(() => {
+    const p = (config?.provider || '').toLowerCase();
+    if (p === 'gemini') return config?.gemini?.model || '';
+    if (p === 'ollama') return config?.ollama?.model || '';
+    return '';
+  }, [config]);
 
   // Preflight and provider init
   useEffect(() => {
@@ -91,7 +97,7 @@ export function App({ initialRequest = '', copyToClipboard = true, debug = false
     React.createElement(
       Box,
       { borderStyle: 'round', borderColor: 'cyan', paddingX: 1, marginBottom: 1 },
-      React.createElement(Text, { color: 'cyan', bold: true }, `🛟 HelpMe CLI ${debug ? '(debug)' : ''} — provider: ${config.provider}`)
+      React.createElement(Text, { color: 'cyan', bold: true }, `🛟 HelpMe CLI ${debug ? '(debug)' : ''} — ${config.provider}${modelName ? `: ${modelName}` : ''}`)
     )
   );
 
