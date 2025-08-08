@@ -9,8 +9,9 @@ Turn plain-English requests into precise, copy‑pasteable shell commands.
 ### 🚀 Install from GitHub (global)
 
 ```bash
-# replace OWNER/REPO; optionally pin a ref with @main or @v0.1.0
-npm install --global github:OWNER/REPO@main
+# Repo: [LyalinDotCom/helpme-cli](https://github.com/LyalinDotCom/helpme-cli)
+# optionally pin a ref with @main or @v0.1.0
+npm install --global github:LyalinDotCom/helpme-cli@main
 
 # now run anywhere
 helpme "use git to pull the latest changes"
@@ -20,11 +21,11 @@ helpme --interactive
 ### ▶️ Run via npx (GitHub)
 
 ```bash
-# replace OWNER/REPO with your GitHub org/repo; optionally pin a branch or tag with @main
-npx --yes github:OWNER/REPO helpme "use git to pull the latest changes"
+# optionally pin a branch or tag with @main
+npx --yes github:LyalinDotCom/helpme-cli helpme "use git to pull the latest changes"
 
 # interactive/resume mode (no argv request)
-npx --yes github:OWNER/REPO helpme --interactive
+npx --yes github:LyalinDotCom/helpme-cli helpme --interactive
 ```
 
 Notes:
