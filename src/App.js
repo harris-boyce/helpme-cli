@@ -3,11 +3,11 @@ import { Box, Text, useApp, useInput } from 'ink';
 import TextInput from 'ink-text-input';
 import clipboard from 'clipboardy';
 import { getPasteShortcut, getConfig } from './config.js';
-import { suggestCommandFromRequest } from './fakeInference.js';
+// Removed fake provider; rely only on configured providers
 import { createProvider } from './providers/createProvider.js';
 import { checkSetup } from './setupChecks.js';
 
-export function App({ initialRequest = '', copyToClipboard = true, debug = false, providerOverride } = {}) {
+export function App({ initialRequest = '', copyToClipboard = true, debug = false, providerOverride, mode = 'chat' } = {}) {
   const { exit } = useApp();
   const [request, setRequest] = useState(String(initialRequest || ''));
   const [phase, setPhase] = useState(request ? 'thinking' : 'input');
@@ -43,12 +43,7 @@ export function App({ initialRequest = '', copyToClipboard = true, debug = false
       // Simulate thinking delay for smoother UX
       timeoutId = setTimeout(async () => {
         try {
-          let suggestion;
-          if (config.provider === 'fake' || !providerInstance) {
-            suggestion = suggestCommandFromRequest(request);
-          } else {
-            suggestion = await providerInstance.suggest({ request, cwd: process.cwd(), os: process.platform });
-          }
+          const suggestion = await providerInstance.suggest({ request, cwd: process.cwd(), os: process.platform });
           setResult(suggestion);
           setPhase(suggestion.needsInput ? 'clarify' : 'result');
         } catch (e) {
@@ -60,10 +55,11 @@ export function App({ initialRequest = '', copyToClipboard = true, debug = false
     return () => clearTimeout(timeoutId);
   }, [phase, request, config.provider, providerInstance]);
 
-  // Copy to clipboard and schedule auto-exit
+  // Copy to clipboard and schedule auto-exit (only in oneshot mode)
   useEffect(() => {
     let exitTimer;
     async function doCopyAndMaybeExit() {
+      if (mode !== 'oneshot') return;
       if (phase !== 'result' || !result?.command) return;
       try {
         if (copyToClipboard) {
@@ -78,7 +74,7 @@ export function App({ initialRequest = '', copyToClipboard = true, debug = false
     }
     doCopyAndMaybeExit();
     return () => clearTimeout(exitTimer);
-  }, [phase, result, copyToClipboard, exit]);
+  }, [phase, result, copyToClipboard, exit, mode]);
 
   useInput((input, key) => {
     if (key.ctrl && input === 'c') {
@@ -99,7 +95,7 @@ export function App({ initialRequest = '', copyToClipboard = true, debug = false
     )
   );
 
-  const needsSetup = config.provider !== 'fake' && setupIssues.length > 0;
+  const needsSetup = setupIssues.length > 0;
 
   if (needsSetup) {
     return React.createElement(
@@ -134,7 +130,7 @@ export function App({ initialRequest = '', copyToClipboard = true, debug = false
         })
       ),
       error && React.createElement(Box, { marginTop: 1 }, React.createElement(Text, { color: 'red' }, error)),
-      config.provider === 'fake' && React.createElement(Box, { marginTop: 1 }, React.createElement(Text, { dimColor: true }, 'Tip: Set HELPME_PROVIDER=ollama or gemini in .env to enable real AI.')),
+      null,
       React.createElement(Box, { marginTop: 1 }, React.createElement(Text, { dimColor: true }, 'Press Enter to submit • Ctrl+C to exit'))
     );
   }
@@ -169,12 +165,7 @@ export function App({ initialRequest = '', copyToClipboard = true, debug = false
             const refined = `${request} — ${answer}`.trim();
             (async () => {
               try {
-                let next;
-                if (config.provider === 'fake' || !providerInstance) {
-                  next = suggestCommandFromRequest(refined);
-                } else {
-                  next = await providerInstance.suggest({ request: refined, cwd: process.cwd(), os: process.platform });
-                }
+                const next = await providerInstance.suggest({ request: refined, cwd: process.cwd(), os: process.platform });
                 const resolved = next?.command ? next : { command: `echo "${answer.replaceAll('"', '\\"')}"`, explanation: 'Resolution.' };
                 setResult(resolved);
                 setPhase('result');
@@ -191,7 +182,7 @@ export function App({ initialRequest = '', copyToClipboard = true, debug = false
     );
   }
 
-  // result
+  // result (oneshot shows copy + auto-exit hint; chat shows manual copy hint)
   return React.createElement(
     Box,
     { flexDirection: 'column' },
@@ -212,9 +203,13 @@ export function App({ initialRequest = '', copyToClipboard = true, debug = false
     React.createElement(
       Box,
       { marginBottom: 1 },
-      React.createElement(Text, null, copied ? `Copied to clipboard. Paste with ${pasteShortcut} in your terminal.` : 'Copy to clipboard skipped or failed.')
+      mode === 'oneshot'
+        ? React.createElement(Text, null, copied ? `Copied to clipboard. Paste with ${pasteShortcut} in your terminal.` : 'Copy to clipboard skipped or failed.')
+        : React.createElement(Text, { dimColor: true }, 'Tip: Copy the command manually if needed. On macOS terminal, paste with ', pasteShortcut, '.')
     ),
-    React.createElement(Box, null, React.createElement(Text, { dimColor: true }, 'Press Enter to exit now, or wait a few seconds…'))
+    mode === 'oneshot'
+      ? React.createElement(Box, null, React.createElement(Text, { dimColor: true }, 'Press Enter to exit now, or wait a few seconds…'))
+      : React.createElement(Box, null, React.createElement(Text, { dimColor: true }, 'Press Ctrl+C to exit when you are done.'))
   );
 }
 

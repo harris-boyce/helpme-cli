@@ -25,7 +25,7 @@ export function checkSetup(config) {
       messages.push('Missing GOOGLE_API_KEY in .env. Get a key from Google AI Studio.');
     }
     if (!config?.gemini?.model) {
-      messages.push('Optionally set GOOGLE_MODEL in .env (gemini-1.5-flash or gemini-1.5-pro).');
+      messages.push('Optionally set GOOGLE_MODEL in .env (gemini-2.5-flash or gemini-1.5-pro).');
     }
   } else if (provider === 'fake') {
     messages.push('Provider is set to fake. Set HELPME_PROVIDER=ollama or gemini in .env to enable AI.');

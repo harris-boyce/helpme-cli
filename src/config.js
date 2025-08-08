@@ -1,5 +1,5 @@
 export function getConfig({ providerOverride } = {}) {
-  const provider = providerOverride || process.env.HELPME_PROVIDER || 'fake';
+  const provider = providerOverride || process.env.HELPME_PROVIDER || 'gemini';
   return {
     provider,
     ollama: {

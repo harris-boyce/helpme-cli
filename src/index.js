@@ -22,12 +22,15 @@ function parseArgs(argv) {
 }
 
 const { flags, request } = parseArgs(process.argv.slice(2));
+const hasRequest = Boolean(request && request.trim().length > 0 && !flags.interactive);
+const mode = hasRequest ? 'oneshot' : 'chat';
 
 const { unmount } = render(
   React.createElement(App, {
-    initialRequest: flags.interactive ? '' : request,
+    initialRequest: hasRequest ? request : '',
+    mode,
     debug: Boolean(flags.debug),
-    copyToClipboard: flags.copy !== false,
+    copyToClipboard: mode === 'oneshot' && flags.copy !== false,
     providerOverride: flags.provider || undefined,
   })
 );

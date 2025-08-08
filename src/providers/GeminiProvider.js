@@ -21,7 +21,7 @@ export class GeminiProvider {
     const prompt = `${system}\n\nUser request: ${request}\n\nReply ONLY with the JSON object as described.`;
 
     const response = await this.ai.generate({
-      model: this.model,
+      model: `googleai/${this.model}`,
       prompt,
       config: { temperature: 0.2, maxOutputTokens: 512 },
     });
