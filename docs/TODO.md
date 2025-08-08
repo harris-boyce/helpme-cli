@@ -8,13 +8,13 @@ This is a living spec and task list for building the full HelpMe CLI.
 - Multi-turn fallback: If the task needs a decision or extra info, stay in an interactive TUI and ask clarifying questions.
 - Pluggable AI backends: Local (Ollama) and remote (Gemini) per config/env.
 
-## MVP (fake mode) — Current
+## MVP — Current
 
 - Basic Ink TUI that:
-  - Reads request from argv or interactive input
-  - Generates a fake suggestion (heuristics) and copies to clipboard
-  - Shows paste shortcut and exits automatically
-- System prompt drafted in `docs/system-prompt.md` (to use when real AI is wired)
+  - Reads request from argv (one‑shot) or interactive input (resume chat)
+  - Uses real providers (Gemini or Ollama) for suggestions
+  - One‑shot copies to clipboard and exits automatically
+- System prompt in `docs/system-prompt.md`
 - Config loader with `.env` support (`HELPME_PROVIDER`, `OLLAMA_BASE_URL`, `GOOGLE_API_KEY`)
 
 ## Next

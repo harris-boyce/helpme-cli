@@ -3,7 +3,7 @@ import { Box, Text, useApp, useInput } from 'ink';
 import TextInput from 'ink-text-input';
 import clipboard from 'clipboardy';
 import { getPasteShortcut, getConfig } from './config.js';
-// Removed fake provider; rely only on configured providers
+// Using real providers only (Gemini or Ollama)
 import { createProvider } from './providers/createProvider.js';
 import { checkSetup } from './setupChecks.js';
 
@@ -24,7 +24,7 @@ export function App({ initialRequest = '', copyToClipboard = true, debug = false
   useEffect(() => {
     const issues = checkSetup(config);
     setSetupIssues(issues);
-    if (config.provider !== 'fake' && issues.length === 0) {
+    if (issues.length === 0) {
       try {
         const instance = createProvider(config);
         setProviderInstance(instance);

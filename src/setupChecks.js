@@ -2,7 +2,7 @@ import { execSync } from 'node:child_process';
 
 export function checkSetup(config) {
   const messages = [];
-  const provider = (config?.provider || 'fake').toLowerCase();
+  const provider = (config?.provider || 'gemini').toLowerCase();
 
   if (provider === 'ollama') {
     // Check if ollama is reachable
@@ -27,8 +27,6 @@ export function checkSetup(config) {
     if (!config?.gemini?.model) {
       messages.push('Optionally set GOOGLE_MODEL in .env (gemini-2.5-flash or gemini-1.5-pro).');
     }
-  } else if (provider === 'fake') {
-    messages.push('Provider is set to fake. Set HELPME_PROVIDER=ollama or gemini in .env to enable AI.');
   }
 
   return messages;

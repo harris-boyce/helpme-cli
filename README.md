@@ -1,6 +1,33 @@
-## HelpMe CLI (MVP)
+## HelpMe CLI
 
-Suggest a shell command from a natural-language request, copy it to the clipboard, show the paste shortcut, and exit. Falls back to interactive questions when needed.
+Suggests a shell command from a natural-language request. Two modes:
+- One‑shot: `helpme "<request>"` → outputs a command, copies it, exits.
+- Resume chat: `helpme --interactive` (or run with no args) → ask/answer without auto-copy; exit with Ctrl+C.
+
+### Install from GitHub (global)
+
+```bash
+# replace OWNER/REPO; optionally pin a ref with @main or @v0.1.0
+npm install --global github:OWNER/REPO@main
+
+# now run anywhere
+helpme "use git to pull the latest changes"
+helpme --interactive
+```
+
+### Run via npx (GitHub)
+
+```bash
+# replace OWNER/REPO with your GitHub org/repo; optionally pin a branch or tag with @main
+npx --yes github:OWNER/REPO helpme "use git to pull the latest changes"
+
+# interactive/resume mode (no argv request)
+npx --yes github:OWNER/REPO helpme --interactive
+```
+
+Notes:
+- Requires Node 18+. The command downloads the repo tarball, installs deps in a temp dir, and runs the `helpme` bin.
+- Configure providers via environment (export) or a `.env` in your current working directory before running npx.
 
 ### Install
 
@@ -34,12 +61,12 @@ npm unlink -g helpme-cli
 
 If your terminal does not recognize `helpme` after linking, open a new terminal window or ensure your global npm bin is on PATH (e.g., `$(npm bin -g)`).
 
-### Env / Config
+### Env / Config (root project dir)
 
 Create a `.env` file (see `docs/env.example`):
 
 ```
-HELPME_PROVIDER=fake       # or: ollama | gemini
+HELPME_PROVIDER=gemini      # or: ollama
 OLLAMA_BASE_URL=http://127.0.0.1:11434
 HELPME_OLLAMA_MODEL=llama3.2
 GOOGLE_API_KEY=...
@@ -48,6 +75,6 @@ GOOGLE_MODEL=gemini-2.5-flash  # or: gemini-1.5-pro
 
 ### Notes
 
-- This MVP runs in fake mode by default. To enable real AI, set `HELPME_PROVIDER` to `ollama` or `gemini` and fill in the corresponding env vars. If misconfigured, the app will show clear setup instructions on first run.
+If misconfigured, the app will show clear setup instructions on first run.
 
 

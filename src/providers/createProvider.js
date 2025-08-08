@@ -2,7 +2,7 @@ import { OllamaProvider } from './OllamaProvider.js';
 import { GeminiProvider } from './GeminiProvider.js';
 
 export function createProvider(config) {
-  const provider = (config?.provider || 'fake').toLowerCase();
+  const provider = (config?.provider || 'gemini').toLowerCase();
   if (provider === 'ollama') {
     const model = config?.ollama?.model || 'llama3.2';
     return new OllamaProvider({
@@ -16,7 +16,7 @@ export function createProvider(config) {
       model: config?.gemini?.model || 'gemini-2.5-flash',
     });
   }
-  return null; // fake handled by caller
+  throw new Error(`Unknown provider: ${provider}. Use 'ollama' or 'gemini'.`);
 }
 
 
