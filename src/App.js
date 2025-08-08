@@ -199,12 +199,19 @@ export function App({ initialRequest = '', copyToClipboard = true, debug = false
       React.createElement(Text, null, 'Request: '),
       React.createElement(Text, { color: 'green' }, request)
     ),
-    React.createElement(
-      Box,
-      { marginBottom: 1 },
-      React.createElement(Text, null, 'Suggested command: '),
-      React.createElement(Text, { color: 'yellow' }, result?.command || '(none)')
-    ),
+    result?.type === 'command'
+      ? React.createElement(
+          Box,
+          { marginBottom: 1 },
+          React.createElement(Text, null, 'Suggested command: '),
+          React.createElement(Text, { color: 'yellow' }, result?.command || '(none)')
+        )
+      : React.createElement(
+          Box,
+          { marginBottom: 1 },
+          React.createElement(Text, null, 'Answer: '),
+          React.createElement(Text, { color: 'yellow' }, result?.answer || '(none)')
+        ),
     result?.explanation && React.createElement(Box, { marginBottom: 1 }, React.createElement(Text, { dimColor: true }, result.explanation)),
     React.createElement(
       Box,

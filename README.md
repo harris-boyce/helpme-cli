@@ -44,15 +44,17 @@ npm link
 ### 🕹️ Usage
 
 ```bash
-# Single-turn (copies command and exits)
-helpme "use git to pull the latest changes"
+# One‑shot examples (auto‑copy + auto‑exit)
+helpme "use git to pull the latest changes"         # returns: git pull
+helpme "list all running processes"                 # returns: ps aux (or similar)
+helpme "what is the capital of New York?"           # returns: Albany.
 
 # Force interactive mode (no argv request)
 helpme --interactive
 
 # Options
-helpme --no-copy              # skip clipboard (one‑shot only)
-helpme --provider gemini      # force provider (gemini | ollama)
+helpme --no-copy                    # skip clipboard (one‑shot only)
+helpme --provider gemini            # force provider (gemini | ollama)
 ```
 
 ### 🔌 Unlink / remove the global command
@@ -78,6 +80,7 @@ GOOGLE_MODEL=gemini-2.5-flash  # or: gemini-1.5-pro
 
 ### ℹ️ Notes
 
+- Supports both command suggestions and concise factual answers. The model chooses based on your question.
 - If misconfigured, HelpMe shows clear setup instructions on first run.
 - To switch providers quickly per‑run:
   ```bash
