@@ -61,9 +61,8 @@ export function App({ initialRequest = '', copyToClipboard = true, debug = false
     return () => clearTimeout(timeoutId);
   }, [phase, request, config.provider, providerInstance]);
 
-  // Copy to clipboard and schedule auto-exit (only in oneshot mode)
+  // Copy to clipboard and exit immediately (only in oneshot mode)
   useEffect(() => {
-    let exitTimer;
     async function doCopyAndMaybeExit() {
       if (mode !== 'oneshot') return;
       if (phase !== 'result' || !result?.command) return;
@@ -75,11 +74,10 @@ export function App({ initialRequest = '', copyToClipboard = true, debug = false
       } catch (e) {
         setCopied(false);
       }
-      // Auto-exit shortly after showing result
-      exitTimer = setTimeout(() => exit(), 3000);
+      // Exit immediately after processing copy
+      exit();
     }
     doCopyAndMaybeExit();
-    return () => clearTimeout(exitTimer);
   }, [phase, result, copyToClipboard, exit, mode]);
 
   useInput((input, key) => {
@@ -213,16 +211,22 @@ export function App({ initialRequest = '', copyToClipboard = true, debug = false
           React.createElement(Text, { color: 'yellow' }, result?.answer || '(none)')
         ),
     result?.explanation && React.createElement(Box, { marginBottom: 1 }, React.createElement(Text, { dimColor: true }, result.explanation)),
-    React.createElement(
-      Box,
-      { marginBottom: 1 },
-      mode === 'oneshot'
-        ? React.createElement(Text, null, copied ? `Copied to clipboard. Paste with ${pasteShortcut} in your terminal.` : 'Copy to clipboard skipped or failed.')
-        : React.createElement(Text, { dimColor: true }, 'Tip: Copy the command manually if needed. On macOS terminal, paste with ', pasteShortcut, '.')
-    ),
-    mode === 'oneshot'
-      ? React.createElement(Box, null, React.createElement(Text, { dimColor: true }, 'Press Enter to exit now, or wait a few seconds…'))
-      : React.createElement(Box, null, React.createElement(Text, { dimColor: true }, 'Press Ctrl+C to exit when you are done.'))
+    (mode === 'oneshot' && copied)
+      ? React.createElement(
+          Box,
+          { marginBottom: 1 },
+          React.createElement(Text, null, `Copied to clipboard. Paste with ${pasteShortcut} in your terminal.`)
+        )
+      : (mode !== 'oneshot'
+          ? React.createElement(
+              Box,
+              { marginBottom: 1 },
+              React.createElement(Text, { dimColor: true }, 'Tip: Copy the command manually if needed. On macOS terminal, paste with ', pasteShortcut, '.')
+            )
+          : null),
+    mode !== 'oneshot'
+      ? React.createElement(Box, null, React.createElement(Text, { dimColor: true }, 'Press Ctrl+C to exit when you are done.'))
+      : null
   );
 }
 
