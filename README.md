@@ -9,9 +9,9 @@ Turn plain-English requests into precise, copy‑pasteable shell commands.
 ### 🚀 Install from GitHub (global)
 
 ```bash
-# Repo: [LyalinDotCom/helpme-cli](https://github.com/LyalinDotCom/helpme-cli)
+# Repo: [harris-boyce/helpme-cli](https://github.com/harris-boyce/helpme-cli)
 # optionally pin a ref with @main or @v0.1.0
-npm install --global github:LyalinDotCom/helpme-cli@main
+npm install --global github:harris-boyce/helpme-cli@main
 
 # now run anywhere
 helpme "use git to pull the latest changes"
@@ -22,10 +22,10 @@ helpme --interactive
 
 ```bash
 # optionally pin a branch or tag with @main
-npx --yes github:LyalinDotCom/helpme-cli helpme "use git to pull the latest changes"
+npx --yes github:harris-boyce/helpme-cli helpme "use git to pull the latest changes"
 
 # interactive/resume mode (no argv request)
-npx --yes github:LyalinDotCom/helpme-cli helpme --interactive
+npx --yes github:harris-boyce/helpme-cli helpme --interactive
 ```
 
 Notes:
