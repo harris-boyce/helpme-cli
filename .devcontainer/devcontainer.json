@@ -1,0 +1,39 @@
+{
+  "name": "HelpMe CLI + Genkit Dev",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:0-20",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "20" },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    
+    "ghcr.io/devcontainers/features/docker-in-docker:1": {}
+  },
+  "postCreateCommand": "npm install -g genkit-cli firebase-tools @anthropic-ai/claude-code && npm install",
+  "forwardPorts": [4000, 4033],
+  "mounts": [
+    "source=pnpm-store,target=/home/node/.pnpm-store,type=volume"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "ms-vscode.js-debug-nightly",
+        "timonwong.shellcheck",
+        "Anthropic.claude-code"
+      ]
+    }
+  },
+  "remoteUser": "node",
+  "runArgs": [
+    "--env",
+    "DISPLAY",
+    "--env",
+    "WAYLAND_DISPLAY",
+    "--env",
+    "XDG_RUNTIME_DIR",
+    "--env",
+    "PULSE_SERVER",
+    "--device",
+    "/dev/snd"
+  ]
+}
